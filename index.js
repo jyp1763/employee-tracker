@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 const db = require('./db/connection');
-
-
+const cTable = require('console.table');
+require('console.table');
 const startMenuQuestion = [
   {
     type: 'list',
@@ -84,8 +84,6 @@ const updateEmployeeRoleQuestion = [
     message: 'What new role would you like for your employee?'
   },
 ]
-
-
 const addRole = async() => {
   const result = await inquirer.prompt(addRoleQuestions)
   const sql = `INSERT INTO role (title, salary, department_id)
@@ -210,9 +208,32 @@ const startMenu = async() => {
         break;
     }
   });
-}
 
-
+  function viewEmployees() {
+    db.findAllEmployees()
+      .then(([rows]) => {
+        let employees = rows;
+        console.table(employees);
+      })
+      .then(() => loadMainPrompts());
+  }
+  function viewRoles() {
+    db.findAllRoles()
+      .then(([rows]) => {
+        let roles = rows;
+        console.table(roles);
+      })
+      .then(() => loadMainPrompts());
+  }
+  function viewDepartments() {
+    db.findAllDepartments()
+      .then(([rows]) => {
+        let departments = rows;
+        console.table(departments);
+      })
+      .then(() => loadMainPrompts());
+  }
+};
 const startApp = async() => {
   console.log('Welcome to the Employee Tracker!');
   console.log('Please choose an option below to get started:');
